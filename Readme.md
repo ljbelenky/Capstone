@@ -1,70 +1,38 @@
 # Art Guesser
-ssh -i ~/.ssh/land_kp_app1.pem ubuntu@ec2-34-239-177-77.compute-1.amazonaws.com 
-
-## S3 Bucket
-land-capstone-data
-
-## EC2
-ec2-54-173-151-200.compute-1.amazonaws.com
-ssh -i ~/.ssh/land_kp_app1.pem ubuntu@ec2-54-173-151-200.compute-1.amazonaws.com
-
-
-### big_iron
-ssh -i ~/.ssh/land_kp_app1.pem ubuntu@ec2-34-239-162-106.compute-1.amazonaws.com
-
-scp -i ~/.ssh/land_kp_app1.pem cat_dog.tar.gz ubuntu@ec2-34-239-162-106.compute-1.amazonaws.com:~
-scp -i ~/.ssh/land_kp_app1.pem ubuntu@ec2-34-239-162-106.compute-1.amazonaws.com:~/DSI-Capstone/ where/to/put
-
-tar -xvzf community_images.tar.gz
-
-
-rsync -avz -e 'ssh' data_binary/ ubuntu@ec2-34-239-162-106.compute-1.amazonaws.com
-
-## big guy (p2.xlarge)
-ssh -i ~/.ssh/land_kp_app1.pem ubuntu@ec2-34-228-157-37.compute-1.amazonaws.com
-
+by Land Belenky  
+www.belenky.name  
+land@belenky.name  
+github.com/ljbelenky  
 
 ## Introduction
-Great works for art are not only pretty to look at, but also constitute one of the most important, universal and continuous records of human history. Besides the subject depicted in the he art, paintings are a record of the math and technology used to create them, and the prevailing (and countervailing) culture, religion and politics of the time.
 
-Like societies, art changes through time and can be (more or less) divided into movements of similar styles, clustered together by time, region and political distinctions. Unfortunately, for many of us who are not trained in art history or art appreciation, these movements may seem incomprehensible. Words like "Impressionism," "Expressionism," and "Art Nuveau" can be intimidating for novice viewers, and may form a barrier to enjoying and understanding art.
+This is my capstone project for the Galavanize Data Science Immersive (DSI) program in Denver, Colorado. It was completed over a three week period in January of 2018.
 
-The goal of this project is to use convolution neural networks and unsupervised machine learning to make the world of art more accessible and inviting for everyone. I have crated an webapp in which a person can upload an image that they enjoy and the computer can then identify its style, and find related works for art from the world's great museums. Additionally, the neural network may be able to recast the art into the style of other artists.
+As an engineer and scientist, I know very little about fine art. I'd like to know more, but sometimes I get intimidated by what I don't know, or if I go to an art museum and see a painting I don't like, it can leave me disappointed and feeling isolated from art. So I decided that one way to learn more about art is to get better at understanding the styles of art, so I can get a feel for what I like, what I don't like and how to navigate between them.
 
-My hope for this project is that it will help people enjoy the art they already know, perhaps gain some insight into what they like and why,  find connections to similar art and become interested in exploring new art.
+I thought it would be interesting to use Machine Learning (ML) to teach a computer to recognize the style of fine art.
 
-#### Abstract Art Or Pointillism?
+There are many different methods of machine learning, but mostly they follow the same basic pattern:  Given a set of input values, and a set of desired output values, we want to construct an algorithm that does the best job of calculating the desired output value for any set of input values. In our case, the input values are the numeric values corresponding to the red, green and blue values for every pixel in an image. The desired output values are a number between 0 and 1, where numbers close to zero indicate that the painting is of style zero and numbers close to one indicate that the painting is of style 1.
 
-![](Presentation/AbstractorPointillism.jpg)
+Many problems in Machine Learning can at least approximately be solved by linear regression of the input values. For example, if you're trying to calculate the sales price of a house (the output value), it's pretty easy to see that it's positively related to some factors (number of bedrooms, total sq feet, etc) and negatively related to other factors (age of roof, number of reported poltergeists, etc.)  Each of these factors is assigned a weight, and the weights are adjusted until the difference between the predicated values and the actuals values is as small as it can be. Eventually, you have a model in which each feature has predictable effect on the overall output value. For example, you can make a statement such as "all factors being equal, the addition of one extra square foot to the size of a house results in an increase of about $100 of sales price."
 
-### Content is not the same thing as style
-Pre-trained convolutional neural networks can be very adept at identifying objects within images, but this does not necessarily help determine artistic style.
-![](Presentation/sonofman) ![](Presentation/still-life-with-fruit.jpg)
-For this reason, I decided not to use pre-trained models.
+These methods are totally ineffective for image classification. It's impossible to point to any pixel value in an image and say "the value of that pixel indicates this is a Cubist painting... and the brighter that pixel, the more certain I am that it is Cubist!" Image classification requires a whole new approach, and particularly a non-linear approach in which parts of the image have no fixed impact on the eventual classification. We call these Convolutional Neural Networks (CNNs).
+
+CNNs work by building a set of "filters" which is an array of numeric values. These filters are convolved or passed across the image. This may be done in multiple layers and with multiple images. The end result then is not a mere tallying of pixel values, but rather an assessment of a collection of features. When we find a group of features that seems to correspond to one class more than another, we can develop an algorithm based upon this difference.
+
+CNNs can be very complicated and some can be so good at some tasks (like recognizing faces and objects) that they appear to be almost magical. But it's important to remember that they are nothing more than computer algorithms that take in a bunch of numbers, do some calculations, and spit out a number. Keeping this in mind, and wanting to see how CNNs perform in action, one of my goals of this project was to keep the CNNs as simple as possible. I believe I sacrificed some accuracy (and certainly simplicity) in the name of keeping things comprehensible. But this was a learning project, not a production version, so I'm happy with that trade-off.
+
+My goal for this project was to help me learn about the inner workings of CNNs, but in the process, it also helped me gain some insight into the differences in styles of art and learn what I like. I hope it does the same for you..
+
+#### Disclaimer:
+The methods and technology presented in this project are not intended to substitute for the judgment and experience of an actual art historian. If you require the services of an art historian, please hang up immediately and contact the Association of Art Historians at www.aah.org.uk
 
 ## Methodology
-As far a computer can see, an image is nothing more than a collection of numbers, one each for red, green and blue at each pixel in the image. Using traditional methods, we could plot their values or take their means, standard deviations or frequency distributions, but these metrics bear very little correlation to the style of an image.
 
-This project is based on a convolutional neural network for three main reasons.
+All the programming in this project was done using Python 3. I used BeautifulSoup to webscrape images of paintings from WikiArt.org. I then used the Python Image Library to crop these to squares that are 90% of the minimum of their height and width. These were then resized to 200x200 pixels and converted to RGB color format. That makes each input image an array of 120,000 numbers.  I split these into train, validation and holdout data sets.
 
-First, it does not require the developer to manually identify any features. In theory, a model could be built based on identify the backgrounds, foregrounds, and subjects in a painting. We know that Piet Mondrian used thick black lines, Jackson Pollack used dribbles of paint, George Seurat used tiny dots and lots of Renaissance artists painted cherubs. So, identifying those items could be the basis of a classification engine, but even if these steps were automated with machine vision, such a model would struggle to be flexible and thorough. A neural network is self-training. It may determine that a bowl of fruit signifies a still life, but it does not need to be told to look for bowls of fruit.
-
-Second: A convolutional neural network looks for relationships between parts of the image. Knowing the color value of any particular point on an image does nothing to help us identify the style. A convolutional neural network essential scans its gaze across the image and looks for relationships between adjacent (and even distant) pixels.
-
-Third: Non-linear. An apple in an image may indicate that the painting is a still life, but if the apple obscures a man's face, it's a different type of art entirely. Deep Learning neural networks, can make these types of non-linear connections because the output values at one layer are combined and used as the input values at the next layer. In this way, a single object does not have a fixed effect on the eventual output, but rather is considered in context with other inputs and intermediate derived values.
-
-
-#### Sources
-34,000 images from WikiArt.org via BeautifulSoup
-#### Overview
-#### Pretreatment
-Cropped to area of interest, resized to 200x200
-#### Train-Test-Validation Split
-
-### Model
-
-#### Overall Architecture
-
+I tried a few different styles of neural networks. The one I settled on was adapted from a CNN used to distingusih between pictures of cats and dogs.
+https://blog.keras.io/building-powerful-image-classification-models-using-very-little-data.html
 
 Three different general architectures for the neural network were explored. The first and most ambitous was to use a single, large neural network trained simultaneously on nine styles of art. The output of this network was a vector or nine values representing the prediction probability corresponding to each style. In theory, this model provides the greatest flexibility and predictive power, but the enormity of the calculations proved insurmountable in the scope of this project.
 

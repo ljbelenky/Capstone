@@ -142,8 +142,7 @@ class art_guesser():
         self.paintings = paintings
         self.app = Flask(__name__,static_url_path='/static')
         self._add_rules()
-        self.human = [0]
-        self.computer = [0]
+
 
     def index(self):
         '''Pick a random painting to display'''
@@ -172,33 +171,6 @@ class art_guesser():
         h *=scale
         w *=scale
         guess = request.args.get('submit', default = '', type = str)
-        if prediction == actual:
-            self.computer.append(1)
-        else:
-            self.computer.append(-1)
-        if guess == actual:
-            self.human.append(1)
-        else:
-            self.human.append(-1)
-
-        def running_ave(h):
-            h = h[1:]
-            return [0]+[sum(h[:length+1])/length for length in range(1,len(h)+1)]
-
-        running_human = running_ave(self.human)
-        running_computer = running_ave(self.computer)
-
-
-
-        plt.plot(self.human, label = 'Human')
-        plt.plot(running_human, label = 'Human Cumulative Average')
-        plt.plot(self.computer, label = 'Computer')
-        plt.plot(running_computer, label = 'Computer Cumulative Average')
-        plt.legend()
-        plt.xlabel('Trials')
-        plt.ylabel('Right-Wrong')
-        plt.savefig('static/charts/history.jpg')
-        plt.clf()
         return render_template('result.html', guess = guess, actual = actual, prediction = prediction, artist = artist, title = title, year = year, width=w, height=h, image=self.fname.replace('static/',''))
 
     def history(self):
@@ -213,7 +185,6 @@ class art_guesser():
     def _add_rules(self):
         self.app.add_url_rule('/', 'index', self.index, methods =['GET','POST'])
         self.app.add_url_rule('/result', 'result', self.result, methods =['GET','POST'])
-        self.app.add_url_rule('/history', 'history', self.history, methods =['GET','POST'])
         self.app.add_url_rule('/about', 'about', self.about)
 
 
