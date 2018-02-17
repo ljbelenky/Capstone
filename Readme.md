@@ -3,6 +3,8 @@
 # Visit Art Guesser
 [Visit the Art Guesser app](http://belenky.land "Art Guesser")
 
+## A Brief Presentation
+[A brief Presentation about me and Art Guesser](https://docs.google.com/presentation/d/1WGlVQFqoVpeh7FZUfcPsjvInn9O40MtvQhYyVCgnvuQ/edit?usp=sharing)
 
 # Art Guesser
 by Land Belenky  
