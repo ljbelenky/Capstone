@@ -1,5 +1,9 @@
 # UNDER CONSTRUCTION
 
+# Visit Art Guesser
+[Visit the Art Guesser app](http://belenky.land "Art Guesser")
+
+
 # Art Guesser
 by Land Belenky  
 www.belenky.name  
@@ -8,7 +12,7 @@ github.com/ljbelenky
 
 ## Introduction
 
-This is my capstone project for the Galavanize Data Science Immersive (DSI) program in Denver, Colorado. It was completed over a three week period in January of 2018.
+This is my capstone project for the Galavanize Data Science Immersive (DSI) program in Denver, Colorado. It was completed over a two week period in January of 2018 and still needs a bit of clean-up and refinement.
 
 As an engineer and scientist, I know very little about fine art. I'd like to know more, but sometimes I get intimidated by what I don't know, or if I go to an art museum and see a painting I don't like, it can leave me disappointed and feeling isolated from art. So I decided that one way to learn more about art is to get better at understanding the styles of art, so I can get a feel for what I like, what I don't like and how to navigate between them.
 
@@ -28,6 +32,11 @@ My goal for this project was to help me learn about the inner workings of CNNs, 
 
 #### Disclaimer:
 The methods and technology presented in this project are not intended to substitute for the judgment and experience of an actual art historian. If you require the services of an art historian, please hang up immediately and contact the Association of Art Historians at www.aah.org.uk
+
+#### Further Disclaimer:
+Is this really the best way to solve this problem? Does it make sense to use a round-robin approach and an SVC? Does this scale well? Is it easy to train? Is it robust and extensible?
+
+None of the above. I took this approach because I was interested in building neural networks from the ground up, in being able to watch things break and get them working again. Maybe later I'll work on a more robust approach.
 
 ## Methodology
 
