@@ -19,7 +19,6 @@ def predict_one_image(filename):
     prediction, p_vector  = ep.predict_one(jpg)
     return prediction, p_vector
 
-
 class svc_predictor():
     def __init__(self):
         with open('svc_model.pkl', 'rb') as f:
@@ -33,13 +32,11 @@ class svc_predictor():
         predictions = ['Abstract','Cubism','Expressionism','Pointillism']
         return predictions[prediction]
 
-
 class jpgPipeline():
     def __init__(self,filename,with_target = False, image_mode = 'RGB'):
         self.fname = filename
         self.image_mode =image_mode
         self._load()
-        # self._find_target(with_target)
 
     def _load(self):
         self.image = Image.open(self.fname).convert(mode = self.image_mode)
@@ -59,18 +56,12 @@ class jpgPipeline():
         small = np.expand_dims(np.asarray(small_thumbnail)/255, axis = 0)
         self.X = {'large':large,'small':small}
 
-    def _find_target(self, with_target):
-        if with_target:
-            self.y = 'target dummy'
-        else:
-            self.y = None
-
 class Ensemble_Predictor():
     def __init__(self):
         self._load_models()
 
     def _load_models(self):
-        with open(models.pkl','rb') as pkl:
+        with open('models.pkl','rb') as pkl:
             self.model_dict = pickle.load(pkl)
         root = '../pairwise/'
         for key, value in self.model_dict.items():
@@ -110,14 +101,13 @@ class art_guesser():
     def index(self):
         '''Pick a random painting to display'''
         random_painting = paintings.sample(1)
-
         self.fname = random_painting['files'].iloc[0]
         prediction, p_vector  = predict_one_image(self.fname)
         # if prediction == 'Expressionism':
         #     prediction = svc.predict(p_vector)
         w,h = Image.open(self.fname).size
         scale = 450/h
-        h *=scale
+        h*=scale
         w*=scale
         title = self.fname.split('/')[-1].replace('.jpg','').replace('_',' ')
         artist = self.fname.split('/')[3].replace('_',' ')
@@ -148,7 +138,6 @@ class art_guesser():
         self.app.add_url_rule('/', 'index', self.index, methods =['GET','POST'])
         self.app.add_url_rule('/result', 'result', self.result, methods =['GET','POST'])
         self.app.add_url_rule('/about', 'about', self.about)
-
 
 if __name__ == '__main__':
     paintings = pd.read_csv('holdouts.csv')
