@@ -67,41 +67,11 @@ class jpgPipeline():
 
 class Ensemble_Predictor():
     def __init__(self):
-        self.model_dict = {
-        'Abstract-Cubism':{
-            'mfile':'A-C_final_large.mdl',
-            'zero_class':'Abstract',
-            'one_class':'Cubism',
-            'model':None,
-            'size':'large'},
-        'Abstract-Expressionism':{
-            'mfile':'checkpoint.mdl',
-            'zero_class':'Abstract',
-            'one_class':'Expressionism',
-            'model':None,
-            'size':'small'},
-        'Abstract-Pointillism':{
-            'mfile':'checkpoint_large.mdl',
-            'zero_class':'Abstract',
-            'one_class':'Pointillism',
-            'model':None,
-            'size':'large'},
-        'Cubism-Expressionism':{
-            'mfile':'checkpoint_large.mdl',
-            'zero_class':'Cubism',
-            'one_class':'Expressionism',
-            'model':None,
-            'size':'large'},
-        'Pointillism-Cubism':{
-            'mfile':'final_model_large.mdl',
-            'zero_class':'Cubism',
-            'one_class':'Pointillism',
-            'model': None,
-            'size':'large'}}
-
         self._load_models()
 
     def _load_models(self):
+        with open(models.pkl','rb') as pkl:
+            self.model_dict = pickle.load(pkl)
         root = '../pairwise/'
         for key, value in self.model_dict.items():
             model_path = os.path.join(root,key,value['mfile'])
@@ -127,12 +97,6 @@ class Ensemble_Predictor():
         anti_style = min(combined_predictions, key=lambda key:combined_predictions[key])
         return predicted_style, anti_style, predictions, p_vector
 
-    def probabilities(self,predictions):
-        result = []
-        for k,v in predictions.items():
-            result.extend(v)
-        return result
-
     def predict_one(self,jpg):
         prediction, anti_prediction, prob_dictionary, p_vector = self.predict(jpg.X)
         return prediction, p_vector
@@ -142,7 +106,6 @@ class art_guesser():
         self.paintings = paintings
         self.app = Flask(__name__,static_url_path='/static')
         self._add_rules()
-
 
     def index(self):
         '''Pick a random painting to display'''
@@ -173,16 +136,15 @@ class art_guesser():
         guess = request.args.get('submit', default = '', type = str)
         return render_template('result.html', guess = guess, actual = actual, prediction = prediction, artist = artist, title = title, year = year, width=w, height=h, image=self.fname.replace('static/',''))
 
-    def history(self):
-        return render_template('history.html')
-
     def about(self):
         return render_template('about.html')
 
     def run(self):
+        '''Start Flask app running.  Art Guesser will start when user navigates to index page'''
         self.app.run(host='0.0.0.0',port = 3000, threaded = True,  debug = True)
 
     def _add_rules(self):
+        ''' Add FLASK url rules for various subpages of the website '''
         self.app.add_url_rule('/', 'index', self.index, methods =['GET','POST'])
         self.app.add_url_rule('/result', 'result', self.result, methods =['GET','POST'])
         self.app.add_url_rule('/about', 'about', self.about)
