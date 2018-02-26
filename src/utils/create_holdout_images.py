@@ -5,7 +5,6 @@ from random import sample
 import os.path
 from PIL import Image
 
-
 '''Utility program to create holdout data set from images'''
 '''Do not run more than once, or else training set will be decimated'''
 
