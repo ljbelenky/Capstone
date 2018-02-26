@@ -58,9 +58,6 @@ class jpgPipeline():
 
 class Ensemble_Predictor():
     def __init__(self):
-        self._load_models()
-
-    def _load_models(self):
         with open('models.pkl','rb') as pkl:
             self.model_dict = pickle.load(pkl)
         root = '../pairwise/'
