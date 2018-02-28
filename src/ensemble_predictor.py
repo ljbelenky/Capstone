@@ -2,6 +2,7 @@ import pickle
 import os
 from keras.models import load_model
 import numpy as np
+from jpg_pipeline import jpgPipeline
 
 class Ensemble_Predictor():
     def __init__(self):
@@ -12,7 +13,8 @@ class Ensemble_Predictor():
             model_path = os.path.join(root,key,value['mfile'])
             value['model'] = load_model(model_path)
 
-    def predict(self,jpg):
+    def predict(self,jpg_filename):
+        jpg = jpgPipeline(jpg_filename)
         predictions = {'Abstract':[],'Cubism':[],'Expressionism':[],'Pointillism':[]}
         p_vector = []
         for k, value in self.model_dict.items():

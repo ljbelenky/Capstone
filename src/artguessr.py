@@ -1,37 +1,10 @@
 from flask import Flask, render_template, request
-import os
-import operator
-import matplotlib.pyplot as plt
-import pickle
-import numpy as np
 import pandas as pd
 from PIL import Image
-import random
-from sklearn.externals import joblib
-import time
-import os.path
 from ensemble_predictor import Ensemble_Predictor
-from jpg_pipeline import jpgPipeline
+from svc_predictor import SVC_Predictor
 
-'''FLASK WEB APP TO PREDICT AND GUESS ART'''
-
-def predict_one_image(filename):
-    jpg = jpgPipeline(filename)
-    prediction, p_vector  = ep.predict(jpg)
-    return prediction, p_vector
-
-class svc_predictor():
-    def __init__(self):
-        with open('svc_model.pkl', 'rb') as f:
-            self.svc = pickle.load(f)
-        self.scaler = joblib.load("scaler.save")
-
-    def predict(self,p_vector):
-        p_vector = np.expand_dims(p_vector, axis =0)
-        scaled_vector = self.scaler.transform(p_vector)
-        prediction = self.svc.predict(scaled_vector)
-        predictions = ['Abstract','Cubism','Expressionism','Pointillism']
-        return predictions[prediction]
+'''FLASK WEB APP TO PREDICT THE STYLE OF ART'''
 
 class art_guesser():
     def __init__(self,paintings):
@@ -43,9 +16,7 @@ class art_guesser():
         '''Pick a random painting to display'''
         random_painting = paintings.sample(1)
         self.fname = random_painting['files'].iloc[0]
-        prediction, p_vector  = predict_one_image(self.fname)
-        # if prediction == 'Expressionism':
-        #     prediction = svc.predict(p_vector)
+        prediction, p_vector  = ep.predict(self.fname)
         w,h = Image.open(self.fname).size
         scale = 450/h
         h*=scale
@@ -83,6 +54,6 @@ class art_guesser():
 if __name__ == '__main__':
     paintings = pd.read_csv('holdouts.csv')
     ep = Ensemble_Predictor()
-    svc = svc_predictor()
+    svc = SVC_Predictor()
     ag = art_guesser(paintings)
     ag.run()
