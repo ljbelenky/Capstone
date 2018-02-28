@@ -17,7 +17,7 @@ from jpg_pipeline import jpgPipeline
 
 def predict_one_image(filename):
     jpg = jpgPipeline(filename)
-    prediction, p_vector  = ep.predict_one(jpg)
+    prediction, p_vector  = ep.predict(jpg)
     return prediction, p_vector
 
 class svc_predictor():

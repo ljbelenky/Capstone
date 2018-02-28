@@ -12,15 +12,11 @@ class Ensemble_Predictor():
             model_path = os.path.join(root,key,value['mfile'])
             value['model'] = load_model(model_path)
 
-    def predict(self,jpgX):
-        predictions = {
-            'Abstract':[],
-            'Cubism':[],
-            'Expressionism':[],
-            'Pointillism':[]}
+    def predict(self,jpg):
+        predictions = {'Abstract':[],'Cubism':[],'Expressionism':[],'Pointillism':[]}
         p_vector = []
         for k, value in self.model_dict.items():
-            X = jpgX[value['size']]
+            X = jpg.X[value['size']]
             result1 = value['model'].predict(X)[0,0]
             result0 = 1-result1
             predictions[value['zero_class']].append(result0)
@@ -29,9 +25,4 @@ class Ensemble_Predictor():
 
         combined_predictions = {style:np.mean(values) for style, values in predictions.items()}
         predicted_style = max(combined_predictions, key=lambda key:combined_predictions[key])
-        anti_style = min(combined_predictions, key=lambda key:combined_predictions[key])
-        return predicted_style, anti_style, predictions, p_vector
-
-    def predict_one(self,jpg):
-        prediction, anti_prediction, prob_dictionary, p_vector = self.predict(jpg.X)
-        return prediction, p_vector
+        return predicted_style, p_vector
